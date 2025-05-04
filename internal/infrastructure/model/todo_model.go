@@ -2,7 +2,7 @@ package model
 
 import (
 	"time"
-	"todo-microservice/internal/domain/entity"
+	"todo-golang-example/internal/domain/entity"
 )
 
 type TodoModel struct {

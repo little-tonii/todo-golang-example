@@ -2,8 +2,8 @@ package repositoryimpl
 
 import (
 	"errors"
-	"todo-microservice/internal/domain/entity"
-	"todo-microservice/internal/infrastructure/model"
+	"todo-golang-example/internal/domain/entity"
+	"todo-golang-example/internal/infrastructure/model"
 
 	"gorm.io/gorm"
 )

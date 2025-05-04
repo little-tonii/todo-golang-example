@@ -1,6 +1,6 @@
 package repository
 
-import "todo-microservice/internal/domain/entity"
+import "todo-golang-example/internal/domain/entity"
 
 type TodoRepository interface {
 	Create(todo *entity.TodoEntity) error
