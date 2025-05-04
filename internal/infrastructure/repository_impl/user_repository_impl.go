@@ -18,7 +18,7 @@ func NewUserRepositoryImpl(database *gorm.DB) *UserRepositoryImpl {
 	}
 }
 
-func (userRepository *UserRepositoryImpl) CreateUser(userEntity *entity.UserEntity) error {
+func (userRepository *UserRepositoryImpl) Create(userEntity *entity.UserEntity) error {
 	userModel := model.UserModel{
 		Email:          userEntity.Email,
 		HashedPassword: userEntity.HashedPassword,
@@ -30,7 +30,7 @@ func (userRepository *UserRepositoryImpl) CreateUser(userEntity *entity.UserEnti
 	return nil
 }
 
-func (userRepository *UserRepositoryImpl) GetUserByEmail(email string) (*entity.UserEntity, error) {
+func (userRepository *UserRepositoryImpl) GetById(email string) (*entity.UserEntity, error) {
 	userModel := model.UserModel{Email: email}
 	result := userRepository.database.First(&userModel)
 	if result.Error != nil {
@@ -39,7 +39,7 @@ func (userRepository *UserRepositoryImpl) GetUserByEmail(email string) (*entity.
 	return userModel.ToEntity(), nil
 }
 
-func (userRepository *UserRepositoryImpl) GetUserById(id int64) (*entity.UserEntity, error) {
+func (userRepository *UserRepositoryImpl) GetByEmail(id int64) (*entity.UserEntity, error) {
 	userModel := model.UserModel{Id: id}
 	result := userRepository.database.First(&userModel)
 	if result.Error != nil {

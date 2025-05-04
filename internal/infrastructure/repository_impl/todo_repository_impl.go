@@ -18,7 +18,7 @@ func NewTodoRepositoryImpl(database *gorm.DB) *TodoRepositoryImpl {
 	}
 }
 
-func (todoRepositoryImpl *TodoRepositoryImpl) createTodo(todoEntity *entity.TodoEntity) error {
+func (todoRepositoryImpl *TodoRepositoryImpl) Create(todoEntity *entity.TodoEntity) error {
 	todoModel := model.TodoModel{
 		Description: todoEntity.Description,
 		Title:       todoEntity.Title,
@@ -30,8 +30,9 @@ func (todoRepositoryImpl *TodoRepositoryImpl) createTodo(todoEntity *entity.Todo
 	return nil
 }
 
-func (todoRepositoryImpl *TodoRepositoryImpl) updateTodo(todoEntity *entity.TodoEntity) error {
+func (todoRepositoryImpl *TodoRepositoryImpl) Update(todoEntity *entity.TodoEntity) error {
 	todoModel := model.TodoModel{
+		Id:          todoEntity.Id,
 		Description: todoEntity.Description,
 		Title:       todoEntity.Title,
 	}
@@ -42,7 +43,7 @@ func (todoRepositoryImpl *TodoRepositoryImpl) updateTodo(todoEntity *entity.Todo
 	return nil
 }
 
-func (todoRepositoryImpl *TodoRepositoryImpl) deleteTodoById(todoEntity *entity.TodoEntity) error {
+func (todoRepositoryImpl *TodoRepositoryImpl) DeleteById(todoEntity *entity.TodoEntity) error {
 	todoModel := model.TodoModel{
 		Id: todoEntity.Id,
 	}
@@ -53,4 +54,28 @@ func (todoRepositoryImpl *TodoRepositoryImpl) deleteTodoById(todoEntity *entity.
 	return nil
 }
 
-func (todoRepositoryImpl *TodoRepositoryImpl) getTodoById
+func (todoRepositoryImpl *TodoRepositoryImpl) GetById(id int64) (*entity.TodoEntity, error) {
+	todoModel := model.TodoModel{Id: id}
+	result := todoRepositoryImpl.database.First(&todoModel)
+	if result.Error != nil {
+		return nil, errors.New("Todo không tồn tại")
+	}
+	return todoModel.ToEntity(), nil
+}
+
+func (todoRepositoryImpl *TodoRepositoryImpl) GetAll(page int, size int) ([]*entity.TodoEntity, error) {
+	offset := (page - 1) * size
+	todoModels := make([]model.TodoModel, 0)
+	result := todoRepositoryImpl.database.
+		Offset(offset).
+		Limit(size).
+		Find(&todoModels)
+	if result.Error != nil {
+		return nil, errors.New("Có lỗi xảy ra khi lấy danh sách todo")
+	}
+	todoEntities := make([]*entity.TodoEntity, len(todoModels))
+	for i, todoModel := range todoModels {
+		todoEntities[i] = todoModel.ToEntity()
+	}
+	return todoEntities, nil
+}
