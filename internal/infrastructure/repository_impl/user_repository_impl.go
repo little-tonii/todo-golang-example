@@ -30,7 +30,7 @@ func (userRepository *UserRepositoryImpl) Create(userEntity *entity.UserEntity) 
 	return nil
 }
 
-func (userRepository *UserRepositoryImpl) GetById(email string) (*entity.UserEntity, error) {
+func (userRepository *UserRepositoryImpl) GetByEmail(email string) (*entity.UserEntity, error) {
 	userModel := model.UserModel{Email: email}
 	result := userRepository.database.First(&userModel)
 	if result.Error != nil {
@@ -39,7 +39,7 @@ func (userRepository *UserRepositoryImpl) GetById(email string) (*entity.UserEnt
 	return userModel.ToEntity(), nil
 }
 
-func (userRepository *UserRepositoryImpl) GetByEmail(id int64) (*entity.UserEntity, error) {
+func (userRepository *UserRepositoryImpl) GetById(id int64) (*entity.UserEntity, error) {
 	userModel := model.UserModel{Id: id}
 	result := userRepository.database.First(&userModel)
 	if result.Error != nil {
