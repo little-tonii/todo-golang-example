@@ -3,7 +3,7 @@ package middleware
 import (
 	"errors"
 	"net/http"
-	"todo-golang-example/internal/infrastructure/config"
+	"todo-golang-example/internal/shared/config"
 	"todo-golang-example/pkg/utils"
 
 	"github.com/gin-gonic/gin"

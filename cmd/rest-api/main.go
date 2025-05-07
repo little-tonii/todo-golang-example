@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"todo-golang-example/internal/infrastructure/config"
+
+	"todo-golang-example/internal/interface/router"
+	"todo-golang-example/internal/shared/config"
 	"todo-golang-example/pkg/middleware"
 
 	"github.com/gin-contrib/cors"
@@ -27,6 +29,8 @@ func main() {
 	}
 	defer logFile.Close()
 
+	gin.ForceConsoleColor()
+
 	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
 
 	engine := gin.New()
@@ -43,6 +47,8 @@ func main() {
 	engine.Use(cors.New(corsConfig))
 	engine.Use(middleware.Recovery())
 	engine.Use(middleware.ErrorHandler())
+
+	router.InitializeUserRouter(engine)
 
 	engine.Run(":8080")
 }

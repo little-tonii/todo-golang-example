@@ -1,10 +1,7 @@
 package repositoryimpl
 
 import (
-	"sync"
 	"todo-golang-example/internal/domain/entity"
-	"todo-golang-example/internal/domain/repository"
-	"todo-golang-example/internal/infrastructure/config"
 	"todo-golang-example/internal/infrastructure/model"
 
 	"gorm.io/gorm"
@@ -18,18 +15,6 @@ func NewUserRepositoryImpl(database *gorm.DB) *UserRepositoryImpl {
 	return &UserRepositoryImpl{
 		database: database,
 	}
-}
-
-var (
-	userRepository repository.UserRepository
-	once           sync.Once
-)
-
-func GetUserRepository() repository.UserRepository {
-	once.Do(func() {
-		userRepository = NewUserRepositoryImpl(config.GetDatabase())
-	})
-	return userRepository
 }
 
 func (userRepository *UserRepositoryImpl) Create(userEntity *entity.UserEntity) error {

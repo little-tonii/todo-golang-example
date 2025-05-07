@@ -2,7 +2,6 @@ package handler
 
 import (
 	"todo-golang-example/internal/domain/repository"
-	repositoryimpl "todo-golang-example/internal/infrastructure/repository_impl"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,9 +10,9 @@ type UserHandler struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserHandler() *UserHandler {
+func NewUserHandler(userRepository repository.UserRepository) *UserHandler {
 	return &UserHandler{
-		userRepository: repositoryimpl.GetUserRepository(),
+		userRepository: userRepository,
 	}
 }
 

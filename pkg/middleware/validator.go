@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"reflect"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 func BindingValidator[T any]() gin.HandlerFunc {
@@ -16,13 +17,49 @@ func BindingValidator[T any]() gin.HandlerFunc {
 	}
 	return func(context *gin.Context) {
 		var requestData T
-		if error := context.ShouldBindJSON(&requestData); error != nil {
-			var validatorError validator.ValidationErrors
-			if errors.As(error, &validatorError) {
-				for _, error := range validatorError {
-					field := error.Field()
-					tag := error.Tag()
-					switch tag {
+		if error := context.ShouldBind(&requestData); error != nil {
+			validationErrors := error.(validator.ValidationErrors)
+			if validationErrors != nil {
+				for _, error := range validationErrors {
+					switch error.Tag() {
+					case "required":
+						context.Error(errors.New(fmt.Sprintf("Vui lòng cung cấp %s", error.Field())))
+					case "email":
+						context.Error(errors.New(fmt.Sprintf("Địa chỉ email %s không hợp lệ", error.Field())))
+					case "min":
+						context.Error(errors.New(fmt.Sprintf("%s phải có ít nhất %s ký tự", error.Field(), error.Param())))
+					case "max":
+						context.Error(errors.New(fmt.Sprintf("%s không được vượt quá %s ký tự", error.Field(), error.Param())))
+					case "len":
+						context.Error(errors.New(fmt.Sprintf("%s phải có độ dài chính xác là %s ký tự", error.Field(), error.Param())))
+					case "gt":
+						context.Error(errors.New(fmt.Sprintf("%s phải lớn hơn %s", error.Field(), error.Param())))
+					case "gte":
+						context.Error(errors.New(fmt.Sprintf("%s phải lớn hơn hoặc bằng %s", error.Field(), error.Param())))
+					case "lt":
+						context.Error(errors.New(fmt.Sprintf("%s phải nhỏ hơn %s", error.Field(), error.Param())))
+					case "lte":
+						context.Error(errors.New(fmt.Sprintf("%s phải nhỏ hơn hoặc bằng %s", error.Field(), error.Param())))
+					case "alphanum":
+						context.Error(errors.New(fmt.Sprintf("%s phải nhỏ hơn hoặc bằng %s", error.Field(), error.Param())))
+					case "url":
+						context.Error(errors.New(fmt.Sprintf("%s phải là một URL hợp lệ", error.Field())))
+					case "uuid":
+						context.Error(errors.New(fmt.Sprintf("%s phải là một UUID hợp lệ", error.Field())))
+					case "ip":
+						context.Error(errors.New(fmt.Sprintf("%s phải là một địa chỉ IP hợp lệ", error.Field())))
+					case "ipv4":
+						context.Error(errors.New(fmt.Sprintf("%s phải là một địa chỉ IPv4 hợp lệ", error.Field())))
+					case "ipv6":
+						context.Error(errors.New(fmt.Sprintf("%s phải là một địa chỉ IPv6 hợp lệ", error.Field())))
+					case "numeric":
+						context.Error(errors.New(fmt.Sprintf("%s phải là một số", error.Field())))
+					case "contains":
+						context.Error(errors.New(fmt.Sprintf("%s phải chứa chuỗi con '%s'", error.Field(), error.Param())))
+					case "startswith":
+						context.Error(errors.New(fmt.Sprintf("%s phải bắt đầu bằng '%s'", error.Field(), error.Param())))
+					case "endswith":
+						context.Error(errors.New(fmt.Sprintf("%s phải kết thúc bằng '%s'", error.Field(), error.Param())))
 					default:
 						context.Error(errors.New("Lỗi không không xác định khi validation"))
 					}
@@ -30,7 +67,7 @@ func BindingValidator[T any]() gin.HandlerFunc {
 				context.AbortWithStatus(http.StatusBadRequest)
 				return
 			}
-			context.Error(errors.New("Định dạng json không hợp lệ"))
+			context.Error(errors.New("Vui lòng cung cấp đầy đủ thông tin"))
 			context.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
