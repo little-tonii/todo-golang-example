@@ -22,13 +22,20 @@ var Environment *environment
 
 func LoadEnvironment() []error {
 	errorList := make([]error, 0)
-	error := godotenv.Load(".env")
-	if error != nil {
-		errorList = append(errorList, error)
+	env, _ := os.LookupEnv("ENVIRONMENT")
+	if env != "production" {
+		error := godotenv.Load(".env")
+		if error != nil {
+			errorList = append(errorList, error)
+			return errorList
+		}
 	}
 	databaseHost, exists := os.LookupEnv("POSTGRES_HOST")
 	if !exists {
 		errorList = append(errorList, errors.New("Biến môi trường POSTGRES_HOST chưa được thiết lập"))
+	}
+	if env != "production" {
+		databaseHost = "localhost"
 	}
 	databasePort, exists := os.LookupEnv("POSTGRES_PORT")
 	if !exists {
