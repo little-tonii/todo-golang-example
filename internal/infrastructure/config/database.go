@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"time"
+	"todo-golang-example/internal/shared/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,13 +21,13 @@ func InitializeDatabase() error {
 	once.Do(func() {
 		destination := fmt.Sprintf(
 			"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=%s",
-			Environment.POSTGRES_HOST,
-			Environment.POSTGRES_PORT,
-			Environment.POSTGRES_USER,
-			Environment.POSTGRES_PASSWORD,
-			Environment.POSTGRES_DB,
-			Environment.POSTGRES_SSL_MODE,
-			Environment.POSTGRES_TIME_ZONE,
+			config.Environment.POSTGRES_HOST,
+			config.Environment.POSTGRES_PORT,
+			config.Environment.POSTGRES_USER,
+			config.Environment.POSTGRES_PASSWORD,
+			config.Environment.POSTGRES_DB,
+			config.Environment.POSTGRES_SSL_MODE,
+			config.Environment.POSTGRES_TIME_ZONE,
 		)
 		connection, err := gorm.Open(postgres.Open(destination), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),

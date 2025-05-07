@@ -18,8 +18,8 @@ func BindingValidator[T any]() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var requestData T
 		if error := context.ShouldBind(&requestData); error != nil {
-			validationErrors := error.(validator.ValidationErrors)
-			if validationErrors != nil {
+			validationErrors, parseResult := error.(validator.ValidationErrors)
+			if parseResult {
 				for _, error := range validationErrors {
 					switch error.Tag() {
 					case "required":
@@ -71,7 +71,7 @@ func BindingValidator[T any]() gin.HandlerFunc {
 			context.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
-		context.Set("request_data", requestData)
+		context.Set("request_data", &requestData)
 		context.Next()
 	}
 }

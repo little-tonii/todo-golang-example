@@ -5,8 +5,9 @@ import (
 	"io"
 	"os"
 
+	"todo-golang-example/internal/infrastructure/config"
 	"todo-golang-example/internal/interface/router"
-	"todo-golang-example/internal/shared/config"
+	sharedConfig "todo-golang-example/internal/shared/config"
 	"todo-golang-example/pkg/middleware"
 
 	"github.com/gin-contrib/cors"
@@ -14,7 +15,7 @@ import (
 )
 
 func main() {
-	if errors := config.LoadEnvironment(); errors != nil && len(errors) > 0 {
+	if errors := sharedConfig.LoadEnvironment(); errors != nil && len(errors) > 0 {
 		panic(fmt.Sprintf("%v", errors))
 	}
 
