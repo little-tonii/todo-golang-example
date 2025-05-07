@@ -25,7 +25,7 @@ func BindingValidator[T any]() gin.HandlerFunc {
 					case "required":
 						context.Error(errors.New(fmt.Sprintf("Vui lòng cung cấp %s", error.Field())))
 					case "email":
-						context.Error(errors.New(fmt.Sprintf("Địa chỉ email %s không hợp lệ", error.Field())))
+						context.Error(errors.New(fmt.Sprintf("Địa chỉ email %v không hợp lệ", error.Value())))
 					case "min":
 						context.Error(errors.New(fmt.Sprintf("%s phải có ít nhất %s ký tự", error.Field(), error.Param())))
 					case "max":

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"time"
+	"todo-golang-example/internal/infrastructure/model"
 	"todo-golang-example/internal/shared/config"
 
 	"gorm.io/driver/postgres"
@@ -29,21 +30,32 @@ func InitializeDatabase() error {
 			config.Environment.POSTGRES_SSL_MODE,
 			config.Environment.POSTGRES_TIME_ZONE,
 		)
+
 		connection, err := gorm.Open(postgres.Open(destination), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),
 		})
+
 		if err != nil {
 			error = err
 			return
 		}
+
 		sqlDatabase, err := connection.DB()
+
 		if err != nil {
 			error = err
 			return
 		}
+
 		sqlDatabase.SetMaxIdleConns(2)
 		sqlDatabase.SetMaxOpenConns(10)
 		sqlDatabase.SetConnMaxLifetime(5 * time.Minute)
+
+		if err = connection.AutoMigrate(&model.UserModel{}); err != nil {
+			error = err
+			return
+		}
+
 		database = connection
 	})
 	return error

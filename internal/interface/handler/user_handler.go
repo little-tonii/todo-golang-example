@@ -35,8 +35,8 @@ func (handler *UserHandler) HandleRegister() gin.HandlerFunc {
 		}
 		error := handler.userService.Register(request)
 		if error != nil {
-			context.Error(errors.New(error.Error()))
-			context.AbortWithStatus(http.StatusBadRequest)
+			context.Error(error.Error)
+			context.AbortWithStatus(error.StatusCode)
 			return
 		}
 		context.JSON(http.StatusOK, gin.H{"message": "Đăng ký thành công"})
