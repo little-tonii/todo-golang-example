@@ -85,6 +85,17 @@ func (userService *UserService) Login(request *request.LoginUserRequest) (*respo
 	}, nil
 }
 
-func (userService *UserService) Info(userId *int64) (*response.GetUserInfoResponse, error) {
-	return nil, nil
+func (userService *UserService) Info(userId *int64) (*response.GetUserInfoResponse, *common.ApplicationError) {
+	userEntity, error := userService.userRepository.GetById(*userId)
+	if error != nil {
+		if errors.Is(error, gorm.ErrRecordNotFound) {
+			return nil, common.NewApplicationError(
+				http.StatusUnauthorized,
+				errors.New(fmt.Sprintf("Người dùng không tồn tại")),
+			)
+		} else {
+			return nil, common.NewApplicationError(http.StatusInternalServerError, error)
+		}
+	}
+	return &response.GetUserInfoResponse{Id: userEntity.Id, Email: userEntity.Email}, nil
 }

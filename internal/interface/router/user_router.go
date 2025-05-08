@@ -32,12 +32,10 @@ func InitializeUserRouter(engine *gin.Engine) {
 		)
 	}
 
-	requiredAuthentication := userGroup.Group("")
-
+	requiredAuthentication := userGroup.Group("", middleware.Authentication())
 	{
 		requiredAuthentication.GET(
 			"/info",
-			middleware.Authentication(),
 			userHandler.HandleInfo(),
 		)
 	}

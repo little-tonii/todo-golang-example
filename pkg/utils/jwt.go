@@ -7,6 +7,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type Claims struct {
+	UserId int64
+}
+
 func GenerateAccessToken(secretKey string, userId int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":  userId,
@@ -25,7 +29,7 @@ func GenerateRefreshToken(secretKey string, userId int64) (string, error) {
 	return token.SignedString([]byte(secretKey))
 }
 
-func VerifyToken(secretKey string, token string) (string, error) {
+func VerifyToken(secretKey string, token string) (*Claims, error) {
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 
@@ -37,20 +41,22 @@ func VerifyToken(secretKey string, token string) (string, error) {
 	})
 
 	if err != nil {
-		return "", errors.New("Không thể phân tích token")
+		return nil, errors.New("Token không hợp lệ")
 	}
 
 	tokenIsValid := parsedToken.Valid
 
 	if !tokenIsValid {
-		return "", errors.New("Token không hợp lệ")
+		return nil, errors.New("Token không hợp lệ")
 	}
 
 	claims, ok := parsedToken.Claims.(jwt.MapClaims)
 
 	if !ok {
-		return "", errors.New("Token claims không hợp lệ")
+		return nil, errors.New("Token claims không hợp lệ")
 	}
-	userId := claims["id"].(string)
-	return userId, nil
+	userId := claims["id"].(float64)
+	return &Claims{
+		UserId: int64(userId),
+	}, nil
 }

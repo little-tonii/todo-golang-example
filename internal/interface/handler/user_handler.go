@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"todo-golang-example/internal/application/request"
 	"todo-golang-example/internal/application/service"
+	"todo-golang-example/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +40,7 @@ func (handler *UserHandler) HandleRegister() gin.HandlerFunc {
 			context.AbortWithStatus(error.StatusCode)
 			return
 		}
-		context.JSON(http.StatusOK, gin.H{"message": "Đăng ký thành công"})
+		context.JSON(http.StatusCreated, gin.H{"message": "Đăng ký thành công"})
 	}
 }
 
@@ -68,5 +69,20 @@ func (handler *UserHandler) HandleLogin() gin.HandlerFunc {
 }
 
 func (handler *UserHandler) HandleInfo() gin.HandlerFunc {
-	return func(context *gin.Context) {}
+	return func(context *gin.Context) {
+		claimsRaw, exists := context.Get("claims")
+		if !exists {
+			context.Error(errors.New("Thông tin xác thực bị mất sau khi giải mã"))
+			context.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		claims := claimsRaw.(*utils.Claims)
+		response, error := handler.userService.Info(&claims.UserId)
+		if error != nil {
+			context.Error(error.Error)
+			context.AbortWithStatus(error.StatusCode)
+			return
+		}
+		context.JSON(http.StatusOK, response)
+	}
 }
