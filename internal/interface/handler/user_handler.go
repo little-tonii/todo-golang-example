@@ -44,7 +44,27 @@ func (handler *UserHandler) HandleRegister() gin.HandlerFunc {
 }
 
 func (handler *UserHandler) HandleLogin() gin.HandlerFunc {
-	return func(context *gin.Context) {}
+	return func(context *gin.Context) {
+		requestRaw, exists := context.Get("request_data")
+		if !exists {
+			context.Error(errors.New("Dữ liệu request bị mất sau khi validate"))
+			context.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		request, parseResult := requestRaw.(*request.LoginUserRequest)
+		if !parseResult {
+			context.Error(errors.New("Dữ liệu request không phải là LoginUserRequest"))
+			context.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		response, error := handler.userService.Login(request)
+		if error != nil {
+			context.Error(error.Error)
+			context.AbortWithStatus(error.StatusCode)
+			return
+		}
+		context.JSON(http.StatusOK, response)
+	}
 }
 
 func (handler *UserHandler) HandleInfo() gin.HandlerFunc {
