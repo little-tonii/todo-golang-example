@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"todo-golang-example/internal/infrastructure/config"
@@ -16,17 +16,17 @@ import (
 
 func main() {
 	if errors := sharedConfig.LoadEnvironment(); errors != nil && len(errors) > 0 {
-		panic(fmt.Sprintf("%v", errors))
+		log.Fatalf("Không thể tải biến môi trường: %v", errors)
 	}
 
 	if error := config.InitializeDatabase(); error != nil {
-		panic(error)
+		log.Fatal(error)
 	}
 	defer config.CloseDatabase()
 
-	logFile, err := os.OpenFile("server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		panic(err)
+	logFile, error := os.OpenFile("server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if error != nil {
+		log.Fatal(error)
 	}
 	defer logFile.Close()
 
@@ -51,5 +51,7 @@ func main() {
 
 	router.InitializeUserRouter(engine)
 
-	engine.Run(":8080")
+	if error := engine.Run(":8080"); error != nil {
+		log.Fatalf("Khởi động server thất bại: %v", error)
+	}
 }
