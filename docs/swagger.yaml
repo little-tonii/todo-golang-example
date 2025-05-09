@@ -12,6 +12,16 @@ definitions:
           type: string
         type: array
     type: object
+  request.CreateTodoRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    required:
+    - description
+    - title
+    type: object
   request.LoginUserRequest:
     properties:
       email:
@@ -33,6 +43,40 @@ definitions:
     - email
     - password
     type: object
+  request.UpdateTodoByIdRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    required:
+    - description
+    - title
+    type: object
+  response.GetTodoByIdResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  response.GetTodoListResponse:
+    properties:
+      page:
+        type: integer
+      size:
+        type: integer
+      todos:
+        items:
+          $ref: '#/definitions/response.GetTodoByIdResponse'
+        type: array
+    type: object
   response.GetUserInfoResponse:
     properties:
       email:
@@ -47,6 +91,19 @@ definitions:
       refresh_token:
         type: string
     type: object
+  response.UpdateTodoByIdResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -54,6 +111,187 @@ info:
   title: Todo Golang Example
   version: "1.0"
 paths:
+  /todo/{id}:
+    delete:
+      parameters:
+      - description: Request Param
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/godoc.ErrorsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Xóa todo theo id
+      tags:
+      - Todo
+    get:
+      parameters:
+      - description: Request Param
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetTodoByIdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/godoc.ErrorsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Tìm todo bằng id
+      tags:
+      - Todo
+  /todo/create:
+    post:
+      parameters:
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateTodoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetTodoByIdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/godoc.ErrorsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Tạo mới todo
+      tags:
+      - Todo
+  /todo/list:
+    get:
+      parameters:
+      - description: Query Param
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Query Param
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetTodoListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/godoc.ErrorsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Phân trang danh sách todo
+      tags:
+      - Todo
+  /todo/update/{id}:
+    put:
+      parameters:
+      - description: Request Param
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateTodoByIdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UpdateTodoByIdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/godoc.ErrorsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/godoc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Cập nhật todo theo id
+      tags:
+      - Todo
   /user/info:
     get:
       produces:

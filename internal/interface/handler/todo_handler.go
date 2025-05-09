@@ -21,6 +21,18 @@ func NewTodoHandler(todoService *service.TodoService) *TodoHandler {
 	}
 }
 
+// GetTodoById 	godoc
+// @Summary 	Tìm todo bằng id
+// @Produce 	application/json
+// @Tags 		Todo
+// @Security	BearerAuth
+// @Param 		id path int true "Request Param"
+// @Success 	200 {object} response.GetTodoByIdResponse
+// @Failure 	400 {object} godoc.ErrorsResponse
+// @Failure		401 {object} godoc.ErrorResponse
+// @Failure		404 {object} godoc.ErrorResponse
+// @Failure		500 {object} godoc.ErrorResponse
+// @Router		/todo/{id} [get]
 func (handler *TodoHandler) HandleGetTodoById() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		id, error := strconv.ParseInt(context.Param("id"), 10, 64)
@@ -39,6 +51,17 @@ func (handler *TodoHandler) HandleGetTodoById() gin.HandlerFunc {
 	}
 }
 
+// CreateTodo 	godoc
+// @Summary 	Tạo mới todo
+// @Produce 	application/json
+// @Tags 		Todo
+// @Security	BearerAuth
+// @Param 		request body request.CreateTodoRequest true "Request Body"
+// @Success 	200 {object} response.GetTodoByIdResponse
+// @Failure 	400 {object} godoc.ErrorsResponse
+// @Failure		401 {object} godoc.ErrorResponse
+// @Failure		500 {object} godoc.ErrorResponse
+// @Router		/todo/create [post]
 func (handler *TodoHandler) HandleCreateTodo() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		claimsRaw, exists := context.Get("claims")
@@ -70,6 +93,18 @@ func (handler *TodoHandler) HandleCreateTodo() gin.HandlerFunc {
 	}
 }
 
+// DeleteTodoById 	godoc
+// @Summary 		Xóa todo theo id
+// @Produce 		application/json
+// @Tags 			Todo
+// @Security		BearerAuth
+// @Param 			id path int true "Request Param"
+// @Success 		204
+// @Failure 		400 {object} godoc.ErrorsResponse
+// @Failure			401 {object} godoc.ErrorResponse
+// @Failure 		404 {object} godoc.ErrorResponse
+// @Failure			500 {object} godoc.ErrorResponse
+// @Router			/todo/{id} [delete]
 func (handler *TodoHandler) HandlerDeleteTodoById() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		id, error := strconv.ParseInt(context.Param("id"), 10, 64)
@@ -88,6 +123,18 @@ func (handler *TodoHandler) HandlerDeleteTodoById() gin.HandlerFunc {
 	}
 }
 
+// GetTodoList 	godoc
+// @Summary 	Phân trang danh sách todo
+// @Produce 	application/json
+// @Tags 		Todo
+// @Security	BearerAuth
+// @Param 		page query int true "Query Param"
+// @Param 		size query int true "Query Param"
+// @Success 	200 {object} response.GetTodoListResponse
+// @Failure 	400 {object} godoc.ErrorsResponse
+// @Failure		401 {object} godoc.ErrorResponse
+// @Failure		500 {object} godoc.ErrorResponse
+// @Router		/todo/list [get]
 func (handler *TodoHandler) HandleGetTodoList() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		claimsRaw, exists := context.Get("claims")
@@ -119,6 +166,19 @@ func (handler *TodoHandler) HandleGetTodoList() gin.HandlerFunc {
 	}
 }
 
+// UpdateTodoById 	godoc
+// @Summary 		Cập nhật todo theo id
+// @Produce 		application/json
+// @Tags 			Todo
+// @Security		BearerAuth
+// @Param 			id path int true "Request Param"
+// @Param			request body request.UpdateTodoByIdRequest true "Request Body"
+// @Success 		200 {object} response.UpdateTodoByIdResponse
+// @Failure 		400 {object} godoc.ErrorsResponse
+// @Failure			401 {object} godoc.ErrorResponse
+// @Failure 		404 {object} godoc.ErrorResponse
+// @Failure			500 {object} godoc.ErrorResponse
+// @Router			/todo/update/{id} [put]
 func (handler *TodoHandler) HandleUpdateTodoById() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		todoId, error := strconv.ParseInt(context.Param("id"), 10, 64)
