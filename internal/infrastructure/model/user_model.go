@@ -14,6 +14,10 @@ type UserModel struct {
 	UpdatedAt      time.Time `gorm:"column:updated_at;not null;autoUpdateTime"`
 }
 
+func (UserModel) TableName() string {
+	return "users"
+}
+
 func (userModel *UserModel) ToEntity() *entity.UserEntity {
 	return &entity.UserEntity{
 		Id:             userModel.Id,

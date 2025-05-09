@@ -41,7 +41,7 @@ func BindingValidator[T any]() gin.HandlerFunc {
 					case "lte":
 						context.Error(errors.New(fmt.Sprintf("%s phải nhỏ hơn hoặc bằng %s", error.Field(), error.Param())))
 					case "alphanum":
-						context.Error(errors.New(fmt.Sprintf("%s phải nhỏ hơn hoặc bằng %s", error.Field(), error.Param())))
+						context.Error(errors.New(fmt.Sprintf("%s chỉ được chứa các ký tự chữ và số", error.Field())))
 					case "url":
 						context.Error(errors.New(fmt.Sprintf("%s phải là một URL hợp lệ", error.Field())))
 					case "uuid":

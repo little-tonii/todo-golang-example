@@ -51,9 +51,38 @@ func InitializeDatabase() error {
 		sqlDatabase.SetMaxOpenConns(10)
 		sqlDatabase.SetConnMaxLifetime(5 * time.Minute)
 
-		if err = connection.AutoMigrate(&model.UserModel{}); err != nil {
+		if err := connection.AutoMigrate(&model.UserModel{}); err != nil {
 			error = err
 			return
+		}
+
+		if err := connection.AutoMigrate(&model.TodoModel{}); err != nil {
+			error = err
+			return
+		}
+
+		var count int64
+
+		err = connection.Raw(`
+				SELECT 1
+				FROM information_schema.table_constraints
+				WHERE constraint_name = 'fk_todos_user'
+			`).Scan(&count).Error
+
+		if err != nil {
+			error = err
+			return
+		}
+
+		if count == 0 {
+			connection = connection.Exec(`
+			ALTER TABLE todos
+			ADD CONSTRAINT fk_todos_user
+			FOREIGN KEY (user_id)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE
+		`)
 		}
 
 		database = connection

@@ -25,7 +25,7 @@ func NewUserService(userRepository repository.UserRepository) *UserService {
 	}
 }
 
-func (userService *UserService) Register(request *request.RegisterUserRequest) *common.ApplicationError {
+func (service *UserService) Register(request *request.RegisterUserRequest) *common.ApplicationError {
 	hashedPassword, error := pkgUtils.HashPassword(request.Password)
 	if error != nil {
 		return common.NewApplicationError(
@@ -33,7 +33,7 @@ func (userService *UserService) Register(request *request.RegisterUserRequest) *
 			errors.New("Có lỗi trong quá trình mã hóa mật khẩu"),
 		)
 	}
-	_, error = userService.userRepository.GetByEmail(request.Email)
+	_, error = service.userRepository.FindByEmail(request.Email)
 	if error != nil && !errors.Is(error, gorm.ErrRecordNotFound) {
 		return common.NewApplicationError(http.StatusInternalServerError, error)
 	}
@@ -41,7 +41,7 @@ func (userService *UserService) Register(request *request.RegisterUserRequest) *
 		Email:          request.Email,
 		HashedPassword: hashedPassword,
 	}
-	error = userService.userRepository.Create(userEntity)
+	error = service.userRepository.Create(userEntity)
 	if error != nil {
 		return common.NewApplicationError(
 			http.StatusConflict,
@@ -51,8 +51,8 @@ func (userService *UserService) Register(request *request.RegisterUserRequest) *
 	return nil
 }
 
-func (userService *UserService) Login(request *request.LoginUserRequest) (*response.LoginUserResponse, *common.ApplicationError) {
-	userEntity, error := userService.userRepository.GetByEmail(request.Email)
+func (service *UserService) Login(request *request.LoginUserRequest) (*response.LoginUserResponse, *common.ApplicationError) {
+	userEntity, error := service.userRepository.FindByEmail(request.Email)
 	if error != nil {
 		if errors.Is(error, gorm.ErrRecordNotFound) {
 			return nil, common.NewApplicationError(
@@ -75,7 +75,7 @@ func (userService *UserService) Login(request *request.LoginUserRequest) (*respo
 	}
 	accessToken, error := pkgUtils.GenerateAccessToken(config.Environment.JWT_SECRET_KEY, userEntity.Id)
 	userEntity.RefreshToken = refreshToken
-	error = userService.userRepository.Update(userEntity)
+	error = service.userRepository.Update(userEntity)
 	if error != nil {
 		return nil, common.NewApplicationError(http.StatusInternalServerError, error)
 	}
@@ -85,8 +85,8 @@ func (userService *UserService) Login(request *request.LoginUserRequest) (*respo
 	}, nil
 }
 
-func (userService *UserService) Info(userId *int64) (*response.GetUserInfoResponse, *common.ApplicationError) {
-	userEntity, error := userService.userRepository.GetById(*userId)
+func (service *UserService) Info(userId *int64) (*response.GetUserInfoResponse, *common.ApplicationError) {
+	userEntity, error := service.userRepository.FindById(*userId)
 	if error != nil {
 		if errors.Is(error, gorm.ErrRecordNotFound) {
 			return nil, common.NewApplicationError(

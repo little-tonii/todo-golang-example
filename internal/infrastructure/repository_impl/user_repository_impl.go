@@ -17,18 +17,24 @@ func NewUserRepositoryImpl(database *gorm.DB) *UserRepositoryImpl {
 	}
 }
 
-func (userRepository *UserRepositoryImpl) Create(userEntity *entity.UserEntity) error {
+func (repository *UserRepositoryImpl) Create(userEntity *entity.UserEntity) error {
 	userModel := model.UserModel{
 		Email:          userEntity.Email,
 		HashedPassword: userEntity.HashedPassword,
 	}
-	return userRepository.database.Create(&userModel).Error
+	error := repository.database.Create(&userModel).
+		Error
+	if error != nil {
+		return error
+	}
+	userEntity.Id = userModel.Id
+	return nil
 }
 
-func (userRepository *UserRepositoryImpl) GetByEmail(email string) (*entity.UserEntity, error) {
+func (repository *UserRepositoryImpl) FindByEmail(email string) (*entity.UserEntity, error) {
 	var userModel model.UserModel
-	result := userRepository.database.
-		Where(&model.UserModel{Email: email}).
+	result := repository.database.
+		Where("email = ?", email).
 		First(&userModel)
 	if result.Error != nil {
 		return nil, result.Error
@@ -36,10 +42,10 @@ func (userRepository *UserRepositoryImpl) GetByEmail(email string) (*entity.User
 	return userModel.ToEntity(), nil
 }
 
-func (userRepository *UserRepositoryImpl) GetById(id int64) (*entity.UserEntity, error) {
+func (repository *UserRepositoryImpl) FindById(id int64) (*entity.UserEntity, error) {
 	var userModel model.UserModel
-	result := userRepository.database.
-		Where(&model.UserModel{Id: id}).
+	result := repository.database.
+		Where("id = ?", id).
 		First(&userModel)
 	if result.Error != nil {
 		return nil, result.Error
@@ -47,14 +53,14 @@ func (userRepository *UserRepositoryImpl) GetById(id int64) (*entity.UserEntity,
 	return userModel.ToEntity(), nil
 }
 
-func (userRepository *UserRepositoryImpl) Update(userEntity *entity.UserEntity) error {
-	userModel := model.UserModel{
-		HashedPassword: userEntity.HashedPassword,
-		RefreshToken:   userEntity.RefreshToken,
-	}
-	result := userRepository.database.
-		Where(&model.UserModel{Id: userEntity.Id}).
-		Updates(&userModel)
+func (repository *UserRepositoryImpl) Update(userEntity *entity.UserEntity) error {
+	result := repository.database.
+		Model(&model.UserModel{}).
+		Where("id = ?", userEntity.Id).
+		Updates(map[string]any{
+			"hashed_password": userEntity.HashedPassword,
+			"refresh_token":   userEntity.RefreshToken,
+		})
 	if result.Error != nil {
 		return result.Error
 	}

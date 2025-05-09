@@ -48,8 +48,10 @@ func main() {
 	engine.Use(cors.New(corsConfig))
 	engine.Use(middleware.Recovery())
 	engine.Use(middleware.ErrorHandler())
+	engine.NoRoute(middleware.NotFoundRouterHandler())
 
 	router.InitializeUserRouter(engine)
+	router.InitializeTodoRouter(engine)
 
 	if error := engine.Run(":8080"); error != nil {
 		log.Fatalf("Khởi động server thất bại: %v", error)
