@@ -29,23 +29,34 @@ func (repository *TodoRepositoryImpl) Create(todoEntity *entity.TodoEntity) erro
 		return error
 	}
 	todoEntity.Id = todoModel.Id
+	todoEntity.CreatedAt = todoModel.CreatedAt
+	todoEntity.UpdatedAt = todoModel.UpdatedAt
 	return nil
 }
 
 func (repository *TodoRepositoryImpl) Update(todoEntity *entity.TodoEntity) error {
+	todoModel := model.TodoModel{
+		Title:       todoEntity.Title,
+		Description: todoEntity.Description,
+	}
 	result := repository.database.
 		Model(&model.TodoModel{}).
 		Where("id = ?", todoEntity.Id).
-		Updates(map[string]any{
-			"title":       todoEntity.Title,
-			"description": todoEntity.Description,
-		})
+		Updates(&todoModel)
 	if result.Error != nil {
 		return result.Error
 	}
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
 	}
+	var updatedTodo model.TodoModel
+	error := repository.database.
+		Where("id = ?", todoEntity.Id).
+		First(&updatedTodo).Error
+	if error != nil {
+		return error
+	}
+	*todoEntity = *updatedTodo.ToEntity()
 	return nil
 }
 
@@ -72,9 +83,10 @@ func (repository *TodoRepositoryImpl) FindById(id int64) (*entity.TodoEntity, er
 	return todoModel.ToEntity(), nil
 }
 
-func (repository *TodoRepositoryImpl) List(page int64, size int64) ([]*entity.TodoEntity, error) {
+func (repository *TodoRepositoryImpl) List(userId int64, page int64, size int64) ([]*entity.TodoEntity, error) {
 	var todoModels []model.TodoModel
 	error := repository.database.
+		Where("user_id = ?", userId).
 		Limit(int(size)).
 		Offset(int((page - 1) * size)).
 		Find(&todoModels).Error

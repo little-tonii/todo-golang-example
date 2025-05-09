@@ -6,6 +6,11 @@ type CreateTodoRequest struct {
 }
 
 type GetTodoListRequest struct {
-	Page int64 `form:"page" binding:"required,gt:0"`
-	Size int64 `form:"size" binding:"required,gt:0,lte:50"`
+	Page int64 `form:"page" binding:"gt=0"`
+	Size int64 `form:"size" binding:"gt=0,lte=50"`
+}
+
+type UpdateTodoByIdRequest struct {
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
 }

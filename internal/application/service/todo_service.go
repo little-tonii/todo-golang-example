@@ -78,14 +78,14 @@ func (service *TodoService) DeleteTodoById(id int64) *common.ApplicationError {
 	return nil
 }
 
-func (service *TodoService) GetTodoList(request *request.GetTodoListRequest) (*response.GetTodoListResponse, *common.ApplicationError) {
-	todoEntites, error := service.todoRepository.List(request.Page, request.Size)
+func (service *TodoService) GetTodoList(userId int64, request *request.GetTodoListRequest) (*response.GetTodoListResponse, *common.ApplicationError) {
+	todoEntites, error := service.todoRepository.List(userId, request.Page, request.Size)
 	if error != nil {
 		return nil, common.NewApplicationError(http.StatusInternalServerError, error)
 	}
-	todoResposes := make([]*response.GetTodoElementResponse, len(todoEntites))
+	todoResposes := make([]*response.GetTodoByIdResponse, len(todoEntites))
 	for index, todoEntity := range todoEntites {
-		todoResposes[index] = &response.GetTodoElementResponse{
+		todoResposes[index] = &response.GetTodoByIdResponse{
 			Id:          todoEntity.Id,
 			Title:       todoEntity.Title,
 			Description: todoEntity.Description,
@@ -97,5 +97,31 @@ func (service *TodoService) GetTodoList(request *request.GetTodoListRequest) (*r
 		Page:  request.Page,
 		Size:  request.Size,
 		Todos: todoResposes,
+	}, nil
+}
+
+func (service *TodoService) UpdateTodoById(todoId int64, request *request.UpdateTodoByIdRequest) (*response.UpdateTodoByIdResponse, *common.ApplicationError) {
+	todoEntity := &entity.TodoEntity{
+		Id:          todoId,
+		Title:       request.Title,
+		Description: request.Description,
+	}
+	error := service.todoRepository.Update(todoEntity)
+	if error != nil {
+		if errors.Is(error, gorm.ErrRecordNotFound) {
+			return nil, common.NewApplicationError(
+				http.StatusNotFound,
+				errors.New(fmt.Sprintf("Todo không tồn tại")),
+			)
+		} else {
+			return nil, common.NewApplicationError(http.StatusInternalServerError, error)
+		}
+	}
+	return &response.UpdateTodoByIdResponse{
+		Id:          todoEntity.Id,
+		Title:       todoEntity.Title,
+		Description: todoEntity.Description,
+		CreatedAt:   todoEntity.CreatedAt,
+		UpdatedAt:   todoEntity.UpdatedAt,
 	}, nil
 }

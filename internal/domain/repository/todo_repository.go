@@ -7,5 +7,5 @@ type TodoRepository interface {
 	Update(todo *entity.TodoEntity) error
 	DeleteById(id int64) error
 	FindById(id int64) (*entity.TodoEntity, error)
-	List(page int64, size int64) ([]*entity.TodoEntity, error)
+	List(userId int64, page int64, size int64) ([]*entity.TodoEntity, error)
 }

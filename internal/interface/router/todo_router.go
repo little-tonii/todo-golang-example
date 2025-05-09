@@ -20,11 +20,22 @@ func InitializeTodoRouter(engine *gin.Engine) {
 	todoGroup := engine.Group("/todo", middleware.Authentication())
 
 	{
+		todoGroup.GET("/:id", todoHandler.HandleGetTodoById())
+		todoGroup.DELETE("/:id", todoHandler.HandlerDeleteTodoById())
 		todoGroup.POST(
 			"/create",
 			middleware.BindingValidator[request.CreateTodoRequest](),
 			todoHandler.HandleCreateTodo(),
 		)
-		todoGroup.GET("/:id", todoHandler.HandleGetTodoById())
+		todoGroup.GET(
+			"/list",
+			middleware.BindingValidator[request.GetTodoListRequest](),
+			todoHandler.HandleGetTodoList(),
+		)
+		todoGroup.PUT(
+			"/update/:id",
+			middleware.BindingValidator[request.UpdateTodoByIdRequest](),
+			todoHandler.HandleUpdateTodoById(),
+		)
 	}
 }
