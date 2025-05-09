@@ -10,10 +10,23 @@ import (
 	sharedConfig "todo-golang-example/internal/shared/config"
 	"todo-golang-example/pkg/middleware"
 
+	_ "todo-golang-example/docs"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Todo Golang Example
+// @version 1.0
+// @description Just for practice
+// @host localhost:8080
+// @BasePath /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	if errors := sharedConfig.LoadEnvironment(); errors != nil && len(errors) > 0 {
 		log.Fatalf("Không thể tải biến môi trường: %v", errors)
@@ -52,6 +65,8 @@ func main() {
 
 	router.InitializeUserRouter(engine)
 	router.InitializeTodoRouter(engine)
+
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if error := engine.Run(":8080"); error != nil {
 		log.Fatalf("Khởi động server thất bại: %v", error)

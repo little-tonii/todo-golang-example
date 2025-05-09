@@ -34,7 +34,13 @@ func (service *UserService) Register(request *request.RegisterUserRequest) *comm
 		)
 	}
 	_, error = service.userRepository.FindByEmail(request.Email)
-	if error != nil && !errors.Is(error, gorm.ErrRecordNotFound) {
+	if error == nil {
+		return common.NewApplicationError(
+			http.StatusConflict,
+			errors.New("Email đã được sử dụng"),
+		)
+	}
+	if !errors.Is(error, gorm.ErrRecordNotFound) {
 		return common.NewApplicationError(http.StatusInternalServerError, error)
 	}
 	userEntity := &entity.UserEntity{

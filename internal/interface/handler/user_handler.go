@@ -20,6 +20,16 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 	}
 }
 
+// Register 	godoc
+// @Summary 	Đăng ký
+// @Produce 	application/json
+// @Tags 		User
+// @Param 		request body request.RegisterUserRequest true "Request Body"
+// @Success 	201 {object} godoc.ErrorResponse
+// @Failure		400 {object} godoc.ErrorsResponse
+// @Failure		409 {object} godoc.ErrorResponse
+// @Failure		500 {object} godoc.ErrorResponse
+// @Router		/user/register [post]
 func (handler *UserHandler) HandleRegister() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		requestRaw, exists := context.Get("request_data")
@@ -44,6 +54,16 @@ func (handler *UserHandler) HandleRegister() gin.HandlerFunc {
 	}
 }
 
+// Login 		godoc
+// @Summary 	Đăng nhập
+// @Produce 	application/json
+// @Tags 		User
+// @Param 		request body request.LoginUserRequest true "Request Body"
+// @Success 	200 {object} response.LoginUserResponse
+// @Failure		400 {object} godoc.ErrorsResponse
+// @Failure		401 {object} godoc.ErrorResponse
+// @Failure		500 {object} godoc.ErrorResponse
+// @Router		/user/login [post]
 func (handler *UserHandler) HandleLogin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		requestRaw, exists := context.Get("request_data")
@@ -68,6 +88,15 @@ func (handler *UserHandler) HandleLogin() gin.HandlerFunc {
 	}
 }
 
+// Info 		godoc
+// @Summary 	Thông tin người dùng
+// @Produce 	application/json
+// @Tags 		User
+// @Security	BearerAuth
+// @Success 	200 {object} response.GetUserInfoResponse
+// @Failure		401 {object} godoc.ErrorResponse
+// @Failure		500 {object} godoc.ErrorResponse
+// @Router		/user/info [get]
 func (handler *UserHandler) HandleInfo() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		claimsRaw, exists := context.Get("claims")
