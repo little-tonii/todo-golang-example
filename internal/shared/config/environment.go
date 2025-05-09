@@ -16,6 +16,8 @@ type environment struct {
 	POSTGRES_PASSWORD  string
 	POSTGRES_DB        string
 	JWT_SECRET_KEY     string
+	REDIS_PORT         string
+	REDIS_HOST         string
 }
 
 var Environment *environment
@@ -65,6 +67,14 @@ func LoadEnvironment() []error {
 	if !exists {
 		errorList = append(errorList, errors.New("Biến môi trường JWT_SECRET_KEY chưa được thiết lập"))
 	}
+	redisHost, exists := os.LookupEnv("REDIS_HOST")
+	if !exists {
+		errorList = append(errorList, errors.New("Biến môi trường REDIS_HOST chưa được thiết lập"))
+	}
+	redisPort, exists := os.LookupEnv("REDIS_PORT")
+	if !exists {
+		errorList = append(errorList, errors.New("Biến môi trường REDIS_PORT chưa được thiết lập"))
+	}
 	Environment = &environment{
 		POSTGRES_HOST:      databaseHost,
 		POSTGRES_PORT:      databasePort,
@@ -74,6 +84,8 @@ func LoadEnvironment() []error {
 		POSTGRES_SSL_MODE:  databaseSSLMode,
 		POSTGRES_TIME_ZONE: databaseTimeZone,
 		JWT_SECRET_KEY:     jwtSecretKey,
+		REDIS_PORT:         redisPort,
+		REDIS_HOST:         redisHost,
 	}
 	return errorList
 }
