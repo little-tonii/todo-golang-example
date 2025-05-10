@@ -22,6 +22,12 @@ A simple Todo REST API built with Golang for practice purposes.
 - Swagger API documentation
 - Dockerized for easy deployment
 
+## Project Architecture
+
+This project follows the [Go Project Layout Standard](https://github.com/golang-standards/project-layout) for organizing the codebase, which is widely adopted in the Go community for scalable and maintainable projects.
+
+Additionally, the application is designed using Domain-Driven Design (DDD) principles. The codebase is structured to separate domain logic, application services, infrastructure, and interfaces, making it easier to maintain, test, and extend.
+
 ## Getting Started
 
 ### Prerequisites
@@ -64,7 +70,7 @@ A simple Todo REST API built with Golang for practice purposes.
 ```
 .
 ├── cmd/                # Main application entrypoint
-├── internal/           # Application code (domain, service, handler, etc.)
+├── internal/           # Application code (domain, service, handler, etc.) following DDD principles
 ├── pkg/                # Shared packages (middleware, utils, etc.)
 ├── deployments/        # Docker Compose and deployment files
 ├── build/              # Dockerfile and build scripts
@@ -72,6 +78,9 @@ A simple Todo REST API built with Golang for practice purposes.
 ├── .env.example        # Example environment variables
 └── README.md
 ```
+
+- The `internal/` directory is organized according to DDD, separating domain models, repositories, services, and handlers.
+- The overall structure is based on the [golang-standards/project-layout](https://github.com/golang-standards/project-layout) repository.
 
 ## License
 
