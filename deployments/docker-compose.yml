@@ -39,21 +39,21 @@ services:
     volumes:
       - redisinsight_data:/db
 
-  # todo-example:
-  #   build:
-  #     context: ..
-  #     dockerfile: build/package/Dockerfile
-  #   container_name: todo-example
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8080:8080"
-  #   env_file:
-  #     - ../.env
-  #   restart: unless-stopped
+  todo-example:
+    build:
+      context: ..
+      dockerfile: build/package/Dockerfile
+    container_name: todo-example
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../.env
+    restart: unless-stopped
 
 volumes:
   postgres:
