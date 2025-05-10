@@ -4,7 +4,7 @@ A simple Todo REST API built with Golang for practice purposes.
 
 ## 🚀 Technologies Used
 
-<p align="center">
+<p>
   <img src="https://img.shields.io/badge/Go-1.18+-00ADD8?logo=go&logoColor=white" alt="Go" />
   <img src="https://img.shields.io/badge/Gin-00B386?logo=gin&logoColor=white" alt="Gin" />
   <img src="https://img.shields.io/badge/GORM-FF7043?logo=go&logoColor=white" alt="GORM" />
