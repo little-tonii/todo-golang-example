@@ -4,14 +4,14 @@ A simple Todo REST API built with Golang for practice purposes.
 
 ## 🚀 Technologies Used
 
-<p>
-<img src="https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white&style=for-the-badge" alt="Go" />
-<img src="https://img.shields.io/badge/Gin-00B386?logo=gin&logoColor=white&style=for-the-badge" alt="Gin" />
-<img src="https://img.shields.io/badge/GORM-FF7043?logo=go&logoColor=white&style=for-the-badge" alt="GORM" />
-<img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white&style=for-the-badge" alt="PostgreSQL" />
-<img src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white&style=for-the-badge" alt="Docker" />
-<img src="https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=white&style=for-the-badge" alt="Swagger" />
-<img src="https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white&style=for-the-badge" alt="JWT" />
+<p align="center" style="margin-bottom: 20px;">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go" width="48" height="48" style="margin-right: 16px;"/>
+  <img src="https://raw.githubusercontent.com/gin-gonic/logo/master/color.png" alt="Gin" width="48" height="48" style="margin-right: 16px;"/>
+  <img src="https://avatars.githubusercontent.com/u/17219288?s=200&v=4" alt="GORM" width="48" height="48" style="margin-right: 16px;"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" width="48" height="48" style="margin-right: 16px;"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" width="48" height="48" style="margin-right: 16px;"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swagger/swagger-original.svg" alt="Swagger" width="48" height="48" style="margin-right: 16px;"/>
+  <img src="https://img.icons8.com/ios-filled/50/000000/jwt.png" alt="JWT" width="48" height="48" style="margin-right: 16px;"/>
 </p>
 
 ## Features
